@@ -3,9 +3,9 @@ function visualization_pi(varargin)
     % 
     % Additional Args:
     %    * FPS (float): frames per second
-    %    * tiles (float): number of tiles to advance
-    %    * radius0 (float): radius of the inner curve
-    %    * radius1 (float): radius of the outer curve
+    %    * points (float): number of tiles to advance
+    %    * radius0 (float): radius of the inner arm
+    %    * radius1 (float): radius of the outer arm
     %
     % Examples:
     %    visualization_pi('fps', 144);
@@ -22,8 +22,8 @@ function visualization_pi(varargin)
     % Default
     FPS = 60;    % Frames per second
     points = 5;  % Number of points to advance
-    radius0 = 1; % Radius for the inner curve
-    radius1 = 1; % Radius for the outer curve
+    radius0 = 1; % Radius for the inner arm
+    radius1 = 1; % Radius for the outer arm
     
     % Miscellaneous
     color_draw = [0, 0, 0];
@@ -63,12 +63,11 @@ function visualization_pi(varargin)
     timer_val = tic;
     running = true; 
     iteration = 1;
-    line0 = plot([0, 0], [0, 0], '-', 'Color', color_arm, 'LineWidth', 1.5);
-    line1 = plot([0, 0], [0, 0], '-o', 'Color', color_arm, 'LineWidth', 1.5);
-
+    range = [0, 0];
+    line0 = plot(range, range, '-', 'Color', color_arm, 'LineWidth', 1.5);
+    line1 = plot(range, range, '-o', 'Color', color_arm, 'LineWidth', 1.5);
+    
     while running
-        % Define the range of values to plot
-        range = (iteration : (iteration + points)) / 180 * pi;
         
         % Get values
         real_part = real(z1(range));
@@ -80,7 +79,7 @@ function visualization_pi(varargin)
         % Plot
         plot(real_part, imaginary_part, '-', 'Color', color_draw);
 
-        % Update the position of the point marker
+        % Update the position of the arms
         set(line0, 'XData', [0, real_part0], 'YData', [0, imaginary_part0]);
         set(line1, 'XData', [real_part0, real_part(end)], 'YData', [imaginary_part0, imaginary_part(end)]);
 
@@ -94,6 +93,9 @@ function visualization_pi(varargin)
         % Update the iteration counter
         iteration = iteration + points;
         
+        % Update the range of values to plot
+        range = (iteration : (iteration + points)) / 180 * pi;
+
         % Check if the loop should stop
         if fig.UserData
             running = false;
